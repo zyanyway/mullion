@@ -20,7 +20,6 @@ from apache_beam.options.pipeline_options import PipelineOptions
 class ReadData(beam.DoFn):
 
     def process(self, context):
-
         conn = sqlite3.connect(
             "./db/run_5b7252f014da39f6cabbc5f8_cad2e964-2e6c-4dfc-8818-e4bf7b42b816_results_dbs_global_merge_output_block.db")
         df = pd.read_sql_query(
@@ -43,7 +42,6 @@ def read_data():
 class WriteData(beam.DoFn):
 
     def process(self, context, data):
-
         logging.info('context is:', context, type(context))
 
         bigquery_client = bigquery.Client()
@@ -80,7 +78,6 @@ def bq_create_dataset():
 
 
 def bq_create_table():
-
     bigquery_client = bigquery.Client()
     dataset_ref = bigquery_client.dataset('my_dataset_id')
 
@@ -110,10 +107,9 @@ def bq_create_table():
 
 
 def run():
-
     bq_create_dataset()
     bq_create_table()
-    data = read_data() # locally read data since cannot read local data from googld dataflow server
+    data = read_data()  # locally read data since cannot read local data from googld dataflow server
 
     # set the computing engine argumnets as googld dataflow
     pipline_args = ['--project', 'demo2zy',
@@ -123,9 +119,7 @@ def run():
                     '--runner', 'DataflowRunner',
                     '--save_main_session', 'True']
 
-
     with beam.Pipeline(argv=pipline_args) as p:
-
         temp = p | 'Initializing..' >> beam.Create(['1'])
         # records = temp | 'Read records from sqlite' >> beam.ParDo(ReadData())
         result = temp | 'Write to BQ' >> beam.ParDo(WriteData(), data)
@@ -134,6 +128,5 @@ def run():
 
 
 if __name__ == '__main__':
-
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './credential/demo2zy-b720f17009f0.json'
     run()
