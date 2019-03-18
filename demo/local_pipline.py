@@ -16,9 +16,9 @@ import logging
 
 
 def read_data():
-'''
-using pandas to read the local sqlite
-'''
+    '''
+    using pandas to read the local sqlite
+    '''
     conn = sqlite3.connect(
         "./db/run_5b7252f014da39f6cabbc5f8_cad2e964-2e6c-4dfc-8818-e4bf7b42b816_results_dbs_global_merge_output_block.db")
     df = pd.read_sql_query(
@@ -29,9 +29,9 @@ using pandas to read the local sqlite
 
 
 def bq_create_dataset():
-'''
-if there is no dataset with assigned id in the google bigquery, create it
-'''
+    '''
+    if there is no dataset with assigned id in the google bigquery, create it
+    '''
     bigquery_client = bigquery.Client()
     dataset_ref = bigquery_client.dataset('my_dataset_id')
 
@@ -46,9 +46,10 @@ if there is no dataset with assigned id in the google bigquery, create it
 
 
 def write_bq(data):
-'''
-write data to bigquery, using the API of pandas. The to_gbq can create the table automatically according Dataframe column labels info
-'''
+    '''
+    write data to bigquery, using the API of pandas. 
+    The to_gbq can create the table automatically according Dataframe column labels info
+    '''
     bq_create_dataset()
     data.to_gbq('my_dataset_id.my_table',
                    'demo2zy', if_exists='replace')
