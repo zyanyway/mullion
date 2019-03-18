@@ -18,12 +18,11 @@ from apache_beam.options.pipeline_options import PipelineOptions
 
 
 class ReadData(beam.DoFn):
-'''
-The model of reading data from sqlite
-'''
+    '''
+    The model of reading data from sqlite
+    '''
 
     def process(self, context):
-
         conn = sqlite3.connect(
             "./db/run_5b7252f014da39f6cabbc5f8_cad2e964-2e6c-4dfc-8818-e4bf7b42b816_results_dbs_global_merge_output_block.db")
         df = pd.read_sql_query(
@@ -34,12 +33,12 @@ The model of reading data from sqlite
 
 
 class WriteData(beam.DoFn):
-'''
-The model of writing data to bigquery. The Beam emite data one by one
-'''
+    '''
+    The model of writing data to bigquery. The Beam emite data one by one
+    '''
 
     def process(self, context):
-    # the context is the one record of the records from the data
+        # the context is the one record of the records from the data
 
         logging.info('context is:', context, type(context))
 
@@ -64,7 +63,7 @@ class Test(beam.DoFn):
 
 
 def bq_create_dataset():
-# create dataset if there is no the assigned dataset
+    # create dataset if there is no the assigned dataset
 
     bigquery_client = bigquery.Client()
     dataset_ref = bigquery_client.dataset('my_dataset_id')
@@ -80,7 +79,7 @@ def bq_create_dataset():
 
 
 def bq_create_table():
-# create table is there is no the assigned table
+    # create table is there is no the assigned table
 
     bigquery_client = bigquery.Client()
     dataset_ref = bigquery_client.dataset('my_dataset_id')
@@ -111,13 +110,11 @@ def bq_create_table():
 
 
 def run():
-
     bq_create_dataset()
     bq_create_table()
 
     # construct the DAG, put it the pipline, run it locally
     with beam.Pipeline(options=PipelineOptions()) as p:
-
         temp = p | 'Initializing..' >> beam.Create(['1'])
         records = temp | 'Read records from sqlite' >> beam.ParDo(ReadData())
         # records | 'Print' >> beam.ParDo(Test())
@@ -127,6 +124,5 @@ def run():
 
 
 if __name__ == '__main__':
-
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './credential/demo2zy-b720f17009f0.json'
     run()
